@@ -25,18 +25,22 @@ classifiers = [
 ]
 dependencies = [
     "packaging>=19.0",
+    "typing_extensions; python_version<'3.8'",
 ]
 
 [project.optional-dependencies]
 docs = [
     "furo>=2023.9.10",
     "sphinx-autodoc-typehints>=1.10.0",
-    "sphinx~=7.0",
+    "sphinx>=7.0",
+    "sphinx-autodoc-typehints",
+    "myst-parser",
 ]
 test = [
     "pytest-cov[toml]>=2",
     "pytest>=6.2.4",
     'tomli>=1.0.0;python_version<"3.11"',
+    'exceptiongroup;python_version<"3.11"',  # Optional
 ]
 
 [project.urls]
@@ -44,7 +48,7 @@ changelog = "https://pep621.readthedocs.io/en/stable/changelog.html"
 homepage = "https://github.com/pypa/pyproject-metadata"
 
 [tool.flit.sdist]
-include = ["LICENSE", "tests/**", "docs/**", "CHANGELOG.rst"]
+include = ["LICENSE", "tests/**", "docs/**", ".gitignore"]
 
 
 [tool.pytest.ini_options]
@@ -58,6 +62,8 @@ testpaths = ["tests"]
 
 [tool.mypy]
 strict = true
+warn_unreachable = false
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 
 
 [tool.ruff.lint]
@@ -85,14 +91,13 @@ extend-select = [
   "NPY",         # NumPy specific rules
   "PD",          # pandas-vet
 ]
-ignore = ["ISC001"]  # conflicts with formatter
-isort.lines-after-imports = 2
-isort.lines-between-types = 1
-pylint.max-branches = 15
+ignore = [
+  "ISC001",  # conflicts with formatter
+  "PLR09",  # Design related (too many X)
+]
 
 [tool.ruff.format]
-quote-style = "single"
-
+docstring-code-format = true
 
 [tool.coverage]
 run.dynamic_context = "test_function"
@@ -100,3 +105,6 @@ html.show_contexts = true
 report.exclude_also = [
     "if typing.TYPE_CHECKING:",
 ]
+
+[tool.repo-review]
+ignore = ["PC140"]
